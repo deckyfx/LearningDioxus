@@ -46,8 +46,9 @@ jobs:
 
       - name: Compress macOS app bundle
         run: |
+          cp README-MACOS.txt dist/README.txt
           cd dist
-          zip -r Dxrc.app.zip Dxrc.app
+          zip -r Dxrc.app.zip Dxrc.app README.txt
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

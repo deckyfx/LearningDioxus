@@ -118,7 +118,7 @@ Once the workflow completes:
 1. Go to **Actions** → **Release Desktop Apps** → Latest run
 2. Download portable artifacts:
    - `dxrc-windows` - Contains .exe portable executable
-   - `dxrc-linux` - Contains .AppImage portable app and .deb package
+   - `dxrc-linux` - Contains .AppImage portable app
    - `dxrc-macos` - Contains .app.zip (zipped app bundle)
 
 If the tag was pushed, artifacts are automatically attached to the GitHub Release.
@@ -134,10 +134,10 @@ All builds are **portable** - no installation required, just download and run!
 
 ### Linux
 - **AppImage** (`dxrc-0.1.0-x86_64.AppImage`) - Universal portable Linux app
-- **DEB** (`dxrc_0.1.0_amd64.deb`) - Debian/Ubuntu package (optional)
 
 ### macOS
 - **APP** (`dxrc.app.zip`) - Zipped portable application bundle (extract and run)
+- **Note**: Unsigned app - see "macOS Security" section below for how to run
 
 ## Workflow Triggers
 
@@ -221,7 +221,7 @@ We use `--out-dir="dist"` for predictable output paths:
 # Build commands
 dx bundle --macos --release --package-types="macos" --out-dir="dist"
 dx bundle --windows --release --package-types="nsis" --out-dir="dist"
-dx bundle --linux --release --package-types="appimage,deb" --out-dir="dist"
+dx bundle --linux --release --package-types="appimage" --out-dir="dist"
 ```
 
 **Output location**: All artifacts go to `dist/` folder:
@@ -285,6 +285,45 @@ When upgrading to a new Dioxus CLI version:
 3. Commit and test workflow
 
 **Current version**: v0.7.0-rc.3
+
+## macOS Security - "App is damaged" Error
+
+When you download and extract the app, macOS shows: **"Dxrc.app is damaged and can't be opened. You should move it to the Trash."**
+
+This is NOT a real virus or damage - it's macOS quarantine protection for unsigned apps.
+
+### Fix (REQUIRED - Only takes 10 seconds):
+
+**Option 1: Terminal Command (Recommended)**
+```bash
+# After extracting the zip, open Terminal and run:
+cd ~/Downloads  # or wherever you extracted the app
+xattr -cr Dxrc.app
+```
+
+Then double-click `Dxrc.app` to open normally.
+
+**Option 2: One-Line Command**
+```bash
+# If app is in Downloads folder:
+xattr -cr ~/Downloads/Dxrc.app && open ~/Downloads/Dxrc.app
+```
+
+### Why This Happens
+
+- Apps built on GitHub Actions are unsigned
+- macOS quarantines all downloaded files as security measure
+- `xattr -cr` removes the quarantine attribute
+- Only needed once per download
+- Your locally-built apps don't have this issue
+
+### For Local Development
+```bash
+# After building locally
+dx bundle --platform desktop --release
+xattr -cr dist/Dxrc.app
+open dist/Dxrc.app
+```
 
 ## Troubleshooting
 
