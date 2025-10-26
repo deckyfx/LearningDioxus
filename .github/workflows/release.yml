@@ -48,7 +48,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libwebkit2gtk-4.0-dev \
             libwebkit2gtk-4.1-dev \
             libgtk-3-dev \
             libayatana-appindicator3-dev \
@@ -56,7 +55,10 @@ jobs:
             patchelf
 
       - name: Install Dioxus CLI
-        run: cargo install dioxus-cli --locked
+        run: |
+          cd dxrc
+          chmod +x install-dx.sh
+          ./install-dx.sh 0.7.0-rc.3
 
       - name: Build desktop bundle
         run: |

@@ -192,6 +192,31 @@ dxrc/
         └── macos/        # macOS .app bundle (portable)
 ```
 
+## Dioxus CLI Version Management
+
+This project uses **Dioxus CLI 0.7.0-rc.3** to ensure consistency across local and CI/CD builds.
+
+### Install Locally
+
+```bash
+# Use the provided script
+./install-dx.sh
+
+# Or install specific version manually
+cargo install dioxus-cli --version 0.7.0-rc.3 --locked
+```
+
+### Updating Dioxus CLI Version
+
+When upgrading to a new Dioxus CLI version:
+
+1. Update `install-dx.sh` default version (line 6)
+2. Update `.github/workflows/release.yml` (line 61)
+3. Test locally: `./install-dx.sh <new-version>`
+4. Commit and test workflow
+
+**Current version**: 0.7.0-rc.3
+
 ## Troubleshooting
 
 ### Build Fails on Specific Platform
@@ -199,13 +224,17 @@ dxrc/
 Check the Actions log for that platform. Common issues:
 
 **Linux**: Missing system dependencies (WebKit, GTK)
-- Solution: Workflow installs these automatically
+- Solution: Workflow installs `libwebkit2gtk-4.1-dev` and dependencies automatically
+- **Note**: Ubuntu 24.04 uses `libwebkit2gtk-4.1-dev` (not 4.0)
 
 **Windows**: WiX toolset issues
 - Solution: Ensure `wix = true` in Dioxus.toml
 
 **macOS**: Code signing (if enabled)
 - Solution: Disable signing or configure certificates in GitHub Secrets
+
+**Dioxus CLI Version Mismatch**:
+- Solution: Ensure `install-dx.sh` and workflow use same version
 
 ### Artifacts Not Uploaded
 
