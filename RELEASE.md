@@ -119,7 +119,7 @@ Once the workflow completes:
 2. Download portable artifacts:
    - `dxrc-windows` - Contains .exe portable executable
    - `dxrc-linux` - Contains .AppImage portable app and .deb package
-   - `dxrc-macos` - Contains .app portable bundle
+   - `dxrc-macos` - Contains .app.zip (zipped app bundle)
 
 If the tag was pushed, artifacts are automatically attached to the GitHub Release.
 
@@ -137,24 +137,35 @@ All builds are **portable** - no installation required, just download and run!
 - **DEB** (`dxrc_0.1.0_amd64.deb`) - Debian/Ubuntu package (optional)
 
 ### macOS
-- **APP** (`dxrc.app`) - Portable application bundle
+- **APP** (`dxrc.app.zip`) - Zipped portable application bundle (extract and run)
 
 ## Workflow Triggers
 
-The GitHub Actions workflow is configured for **manual trigger only** to prevent accidental builds on every push.
+Each platform has its own independent workflow for better isolation and debugging.
 
-### Manual Workflow Dispatch (Primary Method)
+### Available Workflows
 
-To trigger a build manually:
+1. **Build macOS** - Builds macOS .app bundle
+2. **Build Windows** - Builds Windows .exe portable
+3. **Build Linux** - Builds Linux .AppImage and .deb
+
+### Manual Workflow Dispatch
+
+To trigger builds manually:
 
 1. Go to your GitHub repository: `https://github.com/deckyfx/LearningDioxus`
 2. Click **Actions** tab
-3. Select **Release Desktop Apps** workflow in the left sidebar
+3. Select the platform workflow (e.g., "Build macOS")
 4. Click **Run workflow** button (top right)
-5. Configure options:
-   - **Branch**: Select which branch to build from (usually `main`)
-   - **Create GitHub release**: Choose `true` to auto-create a release, `false` for artifacts only
+5. Select branch (usually `main`)
 6. Click the green **Run workflow** button
+
+### Benefits of Separate Workflows
+
+✅ **Independent execution** - One platform failure doesn't cancel others
+✅ **Easier debugging** - Clear logs per platform
+✅ **Faster iterations** - Test only the platform you're working on
+✅ **Parallel execution** - All can run simultaneously if triggered together
 
 ### Optional: Enable Auto-Trigger on Tags
 

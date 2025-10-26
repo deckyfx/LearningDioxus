@@ -1,0 +1,65 @@
+name: Build Linux
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create GitHub release after build?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libxdo-dev
+
+      - name: Install Dioxus CLI
+        run: |
+          chmod +x install-dx-rc.sh
+          ./install-dx-rc.sh v0.7.0-rc.3
+
+      - name: Add Dioxus to PATH
+        run: echo "$HOME/.dx/bin" >> $GITHUB_PATH
+
+      - name: Resolve and build dependencies
+        run: cargo build --release --target x86_64-unknown-linux-gnu
+
+      - name: Build desktop bundle
+        run: dx bundle --linux --release --package-types="appimage,deb" --out-dir="dist"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dxrc-linux
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+          if-no-files-found: warn
