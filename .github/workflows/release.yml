@@ -89,15 +89,18 @@ jobs:
         shell: pwsh
         run: echo "$env:USERPROFILE\.dx\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
+      - name: Resolve and build dependencies
+        run: cargo build --release --target ${{ matrix.target }}
+
       - name: Build desktop bundle
-        run: dx bundle ${{ matrix.platform-flag }} --release --package-types="${{ matrix.package-types }}"
+        run: dx bundle ${{ matrix.platform-flag }} --release --package-types="${{ matrix.package-types }}" --out-dir="dist"
 
       - name: Upload artifacts (Windows)
         if: matrix.platform == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: dxrc-windows
-          path: dist/bundle/nsis/*.exe
+          path: dist/*.exe
           if-no-files-found: warn
 
       - name: Upload artifacts (Linux)
@@ -106,8 +109,8 @@ jobs:
         with:
           name: dxrc-linux
           path: |
-            dist/bundle/appimage/*.AppImage
-            dist/bundle/deb/*.deb
+            dist/*.AppImage
+            dist/*.deb
           if-no-files-found: warn
 
       - name: Upload artifacts (macOS)
@@ -115,7 +118,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dxrc-macos
-          path: dist/bundle/macos/*.app
+          path: dist/*.app
           if-no-files-found: warn
 
   create-release:

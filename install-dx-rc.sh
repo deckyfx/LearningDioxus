@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -eo pipefail
 
 # Dioxus CLI Installer Script

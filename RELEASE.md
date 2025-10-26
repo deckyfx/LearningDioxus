@@ -204,17 +204,25 @@ We use **`x86_64-pc-windows-msvc`** (Microsoft Visual C++ toolchain) for Windows
 
 ## Platform-Specific Build Paths
 
-After running `dx bundle --platform desktop --release` locally:
+We use `--out-dir="dist"` for predictable output paths:
 
+```bash
+# Build commands
+dx bundle --macos --release --package-types="macos" --out-dir="dist"
+dx bundle --windows --release --package-types="nsis" --out-dir="dist"
+dx bundle --linux --release --package-types="appimage,deb" --out-dir="dist"
 ```
-dxrc/
-└── dist/
-    └── bundle/
-        ├── deb/          # Linux .deb packages
-        ├── appimage/     # Linux .AppImage (portable)
-        ├── nsis/         # Windows .exe executable (portable)
-        └── macos/        # macOS .app bundle (portable)
+
+**Output location**: All artifacts go to `dist/` folder:
 ```
+dist/
+├── Dxrc.app           # macOS app bundle
+├── dxrc.exe           # Windows portable executable
+├── dxrc.AppImage      # Linux portable app
+└── dxrc.deb           # Linux Debian package
+```
+
+**Example**: `Bundled app at: /path/to/dxrc/dist/Dxrc.app`
 
 ## Dioxus CLI Version Management
 
