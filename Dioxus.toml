@@ -1,0 +1,53 @@
+[application]
+
+[web.app]
+
+# HTML title tag content
+title = "dxrc"
+
+# include `assets` in web platform
+[web.resource]
+
+# Additional CSS style files
+style = []
+
+# Additional JavaScript files
+script = []
+
+[web.resource.dev]
+
+# Javascript code file
+# serve: [dev-server] only
+script = []
+
+# Bundle configuration for cross-platform desktop apps
+[bundle]
+identifier = "com.deckyfx.dxrc"
+publisher = "DeckyFX"
+
+# Application metadata
+name = "DXRC"
+version = "0.1.0"
+
+# Icon configuration - platform-specific formats
+# PNG for Linux, ICO for Windows, ICNS for macOS
+icon = ["assets/icon.png", "assets/icon.ico", "assets/icon.icns"]
+
+# macOS specific configuration
+[bundle.macos]
+# Minimum macOS version
+minimum_system_version = "10.15"
+# App category for App Store
+category = "DeveloperTool"
+
+# Windows specific configuration
+[bundle.windows]
+# Windows Installer configuration
+wix = true
+# Allow downgrades during development
+allow_downgrades = true
+
+# Linux specific configuration
+[bundle.linux]
+# Debian package dependencies (add if needed)
+deb_depends = []
