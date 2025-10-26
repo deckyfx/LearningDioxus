@@ -66,10 +66,25 @@ jobs:
             librsvg2-dev \
             patchelf
 
-      - name: Install Dioxus CLI
+      - name: Install Dioxus CLI (Unix)
+        if: runner.os != 'Windows'
         run: |
-          chmod +x install-dx.sh
-          ./install-dx.sh 0.7.0-rc.3
+          chmod +x install-dx-rc.sh
+          ./install-dx-rc.sh v0.7.0-rc.3
+
+      - name: Add Dioxus to PATH (Unix)
+        if: runner.os != 'Windows'
+        run: echo "$HOME/.dx/bin" >> $GITHUB_PATH
+
+      - name: Install Dioxus CLI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: .\install-dx-rc.ps1 v0.7.0-rc.3
+
+      - name: Add Dioxus to PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: echo "$env:USERPROFILE\.dx\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Build desktop bundle
         run: dx bundle --platform desktop --package-types ${{ matrix.package-types }} --release

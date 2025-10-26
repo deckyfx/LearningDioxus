@@ -218,28 +218,54 @@ dxrc/
 
 ## Dioxus CLI Version Management
 
-This project uses **Dioxus CLI 0.7.0-rc.3** to ensure consistency across local and CI/CD builds.
+This project uses **Dioxus CLI 0.7.0-rc.3** and installs pre-built binaries from GitHub releases (much faster than compiling from source!).
 
 ### Install Locally
 
+**macOS/Linux:**
 ```bash
-# Use the provided script
-./install-dx.sh
+# Install specific version (recommended)
+./install-dx-rc.sh v0.7.0-rc.3
 
-# Or install specific version manually
-cargo install dioxus-cli --version 0.7.0-rc.3 --locked
+# Or install latest RC/pre-release
+./install-dx-rc.sh
+
+# Or install latest stable only
+./install-dx-rc.sh --stable
 ```
+
+**Windows (PowerShell):**
+```powershell
+# Install specific version (recommended)
+.\install-dx-rc.ps1 v0.7.0-rc.3
+
+# Or install latest RC/pre-release
+.\install-dx-rc.ps1
+
+# Or install latest stable only
+.\install-dx-rc.ps1 -Stable
+```
+
+**Installation Location:** `~/.dx/bin/dx` (also copied to `~/.cargo/bin/dx` if it exists)
+
+### Why Use These Scripts Instead of Cargo?
+
+- ✅ **Much faster** - Downloads pre-built binaries instead of compiling
+- ✅ **RC versions available** - Can install pre-release/RC versions not yet on crates.io
+- ✅ **Auto-update** - Built-in version checking and update capability
+- ✅ **Cross-platform** - Works on macOS, Linux, and Windows
 
 ### Updating Dioxus CLI Version
 
 When upgrading to a new Dioxus CLI version:
 
-1. Update `install-dx.sh` default version (line 6)
-2. Update `.github/workflows/release.yml` (line 61)
-3. Test locally: `./install-dx.sh <new-version>`
-4. Commit and test workflow
+1. Update `.github/workflows/release.yml` (lines 73 and 82)
+2. Test locally:
+   - Unix: `./install-dx-rc.sh v<new-version>`
+   - Windows: `.\install-dx-rc.ps1 v<new-version>`
+3. Commit and test workflow
 
-**Current version**: 0.7.0-rc.3
+**Current version**: v0.7.0-rc.3
 
 ## Troubleshooting
 

@@ -35,3 +35,6 @@
 
 # Temporary icon generation
 assets/icon.iconset/
+
+# PowerShell execution policy files (if any)
+*.ps1.backup
