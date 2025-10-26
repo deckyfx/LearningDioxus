@@ -141,22 +141,46 @@ All builds are **portable** - no installation required, just download and run!
 
 ## Workflow Triggers
 
-The GitHub Actions workflow runs when:
+The GitHub Actions workflow is configured for **manual trigger only** to prevent accidental builds on every push.
 
-1. **Tag pushed** (automatic release): `git push origin v*`
-2. **Manual trigger**: Go to Actions → Release Desktop Apps → Run workflow
+### Manual Workflow Dispatch (Primary Method)
 
-## Manual Workflow Dispatch
+To trigger a build manually:
 
-To manually trigger builds without creating a tag:
-
-1. Go to GitHub repository
+1. Go to your GitHub repository: `https://github.com/deckyfx/LearningDioxus`
 2. Click **Actions** tab
-3. Select **Release Desktop Apps** workflow
-4. Click **Run workflow** button
-5. Choose branch and click **Run workflow**
+3. Select **Release Desktop Apps** workflow in the left sidebar
+4. Click **Run workflow** button (top right)
+5. Configure options:
+   - **Branch**: Select which branch to build from (usually `main`)
+   - **Create GitHub release**: Choose `true` to auto-create a release, `false` for artifacts only
+6. Click the green **Run workflow** button
 
-This is useful for testing the build process without creating an official release.
+### Optional: Enable Auto-Trigger on Tags
+
+If you want to enable automatic builds when creating release tags, uncomment lines in `.github/workflows/release.yml`:
+
+```yaml
+on:
+  workflow_dispatch:
+
+  # Uncomment these lines to enable auto-trigger on tags:
+  push:
+    tags:
+      - 'v*'
+```
+
+Then you can create releases with:
+```bash
+git tag -a v0.1.0 -m "Release v0.1.0"
+git push origin v0.1.0
+```
+
+### Current Configuration
+
+✅ **Manual trigger**: Enabled (primary method)
+❌ **Auto-trigger on push**: Disabled
+⚠️ **Auto-trigger on tags**: Disabled (can be enabled)
 
 ## Windows Toolchain Choice
 

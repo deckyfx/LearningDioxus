@@ -1,10 +1,22 @@
 name: Release Desktop Apps
 
 on:
-  push:
-    tags:
-      - 'v*'
+  # Manual trigger only - click "Run workflow" in GitHub Actions UI
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create GitHub release after build?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+  # Optional: Uncomment to auto-trigger on version tags
+  # push:
+  #   tags:
+  #     - 'v*'
 
 jobs:
   build-desktop:
@@ -94,7 +106,8 @@ jobs:
   create-release:
     needs: build-desktop
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    # Only create release if manually requested OR triggered by tag push
+    if: github.event.inputs.create_release == 'true' || startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Download all artifacts
