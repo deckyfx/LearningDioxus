@@ -21,7 +21,7 @@ on:
 jobs:
   build-desktop:
     strategy:
-      fail-fast: false
+      fail-fast: true  # Cancel all jobs if one fails (saves time)
       matrix:
         include:
           # Windows build (portable executable only)
@@ -53,7 +53,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './dxrc -> target'
+          workspaces: '. -> target'
 
       - name: Install Linux dependencies
         if: matrix.platform == 'ubuntu-latest'
@@ -68,21 +68,18 @@ jobs:
 
       - name: Install Dioxus CLI
         run: |
-          cd dxrc
           chmod +x install-dx.sh
           ./install-dx.sh 0.7.0-rc.3
 
       - name: Build desktop bundle
-        run: |
-          cd dxrc
-          dx bundle --platform desktop --package-types ${{ matrix.package-types }} --release
+        run: dx bundle --platform desktop --package-types ${{ matrix.package-types }} --release
 
       - name: Upload artifacts (Windows)
         if: matrix.platform == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: dxrc-windows
-          path: dxrc/dist/bundle/nsis/*.exe
+          path: dist/bundle/nsis/*.exe
           if-no-files-found: warn
 
       - name: Upload artifacts (Linux)
@@ -91,8 +88,8 @@ jobs:
         with:
           name: dxrc-linux
           path: |
-            dxrc/dist/bundle/appimage/*.AppImage
-            dxrc/dist/bundle/deb/*.deb
+            dist/bundle/appimage/*.AppImage
+            dist/bundle/deb/*.deb
           if-no-files-found: warn
 
       - name: Upload artifacts (macOS)
@@ -100,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dxrc-macos
-          path: dxrc/dist/bundle/macos/*.app
+          path: dist/bundle/macos/*.app
           if-no-files-found: warn
 
   create-release:
